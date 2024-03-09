@@ -1,0 +1,65 @@
+---
+import { getCollection } from "astro:content";
+import translit from "translitit-cyrillic-russian-to-latin";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+
+export async function getStaticPaths() {
+  const tags = await getCollection("commentary");
+  const tagsArr = [...new Set(tags.map((tag) => tag.data.tags))];
+  let flatArray = tagsArr.flat().filter(Boolean);
+  flatArray = flatArray.map((tag) => tag.toLowerCase());
+
+  let uniqueWords = [...new Set(flatArray)].sort();
+
+  // Generate paths for all unique tags
+  return uniqueWords.map((tag) => ({ params: { tag: translit(tag) } }));
+}
+
+let { tag } = Astro.params;
+const tags = await getCollection("commentary");
+
+const tagsArr = [...new Set(tags.map((tag) => tag.data.tags))];
+let flatArray = tagsArr.flat().filter(Boolean);
+flatArray = flatArray.map((tag) => tag.toLowerCase());
+
+let uniqueWords = [...new Set(flatArray)].sort();
+
+var transliteratedObject = uniqueWords.reduce(function (obj, word) {
+  obj[translit(word)] = word;
+  return obj;
+}, {});
+
+const currentTagPosts = tags.filter((obj) => {
+  // Check if obj.data.tags exists and is an array before using 'some'
+  return (
+    obj.data &&
+    Array.isArray(obj.data.tags) &&
+    obj.data.tags.some((innerArray) =>
+      innerArray.includes(transliteratedObject[tag]),
+    )
+  );
+});
+---
+
+<ArticleLayout>
+  <h1>
+    Статьи на тему <span class="capitalize text-amber-400"
+      >{`${transliteratedObject[tag]}`}</span
+    >
+  </h1>
+  <ul>
+    {
+      currentTagPosts.map((blogPostEntry) => (
+        <p>
+          <a
+            href={`/${blogPostEntry.id.split("/")[0]}/${
+              blogPostEntry.data.order
+            }`}
+          >
+            {blogPostEntry.data.title}
+          </a>
+        </p>
+      ))
+    }
+  </ul>
+</ArticleLayout>

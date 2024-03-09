@@ -1,0 +1,26 @@
+---
+import FooterComponent from '../components/FooterComponent.astro';
+import HeaderComponent from '../components/HeaderComponent.astro';
+---
+
+<html lang="en" class="h-screen scroll-behavior: smooth;">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body class="flex flex-col h-screen ">
+<HeaderComponent></HeaderComponent>
+<main class="py-14  bg-gradient-to-b from-zinc-900 to-zinc-100 self-stretch">
+<div class="container border h-full  mx-auto flex justify-center  bg-slate-50">
+    <article class="prose prose-slate prose-sm lg:prose-xl" >
+        <slot /> <!-- your content is injected here -->
+    </article>
+</div>
+
+</main>
+<FooterComponent></FooterComponent>
+
+</body>
+</html>
+
+

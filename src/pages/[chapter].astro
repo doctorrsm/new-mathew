@@ -1,0 +1,75 @@
+---
+import { getCollection } from "astro:content";
+import ArticleLayout from "../layouts/ArticleLayout.astro";
+import { getEntry } from "astro:content";
+import BreadCrumbsComponent from "../components/BreadCrumbsComponent.astro";
+
+export async function getStaticPaths() {
+  // Define a range of chapters you want to generate paths for
+  const chapters = Array.from({ length: 10 }, (_, index) => index + 1);
+
+  // Map over the chapters and get the commentaries for each one
+  const chapterCollections = await Promise.all(
+    chapters.map(async (chapter) => {
+      return await getCollection("commentary", ({ id }) => {
+        return id.startsWith(`${chapter}/`);
+      });
+    }),
+  );
+
+  // Sort each chapter collection by the 'data.order' property
+  const sortedChapterCollections = chapterCollections.map((collection) => {
+    if (Array.isArray(collection)) {
+      return collection.sort((a, b) => a.data.order - b.data.order);
+    }
+    return []; // Return an empty array if the collection is not an array
+  });
+
+  // Return static paths for each chapter
+  return chapters.map((chapter, index) => ({
+    params: { chapter },
+    props: { chapterCollection: sortedChapterCollections[index] },
+  }));
+}
+
+const { chapter } = Astro.params;
+const { chapterCollection } = Astro.props;
+---
+
+<ArticleLayout>
+  <BreadCrumbsComponent chapter=`${chapter}` />
+  <h1>Матфея {chapter} глава. Основные вопросы:</h1>
+  <ul>
+    {
+      chapterCollection.map((blogPostEntry) => (
+        <li class="relative block border ">
+          <p class="text-sm font-bold">
+            {blogPostEntry.data.order}
+            {blogPostEntry.data.verse}
+          </p>
+          <a
+            class="block text-3xl"
+            href={`/${chapter}/${blogPostEntry.data.order}`}
+          >
+            {" "}
+            {blogPostEntry.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <h3>Выбери главу:</h3>
+  <ul class="list-none flex flex-wrap border">
+    {
+      ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((number) => (
+        <li>
+          <a class="block text-3xl no-underline px-2" href={`/${number}`}>
+            {" "}
+            {number}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</ArticleLayout>

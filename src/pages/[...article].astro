@@ -1,0 +1,37 @@
+---
+import { getCollection } from "astro:content";
+import ArticleLayout from "../layouts/ArticleLayout.astro";
+import { getEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  let paths = [];
+  for (let i = 1; i <= 10; i++) {
+    let allBlogPosts; // Declare the variable here
+    if (i >= 1 && i <= 10) {
+      allBlogPosts = await getCollection("commentary", ({ id }) => {
+        return id.startsWith(`${i}/`);
+      });
+    }
+
+    paths = paths.concat(
+      allBlogPosts.map((post) => {
+        return {
+          params: { article: `${i}/${post.data.order}` },
+          props: { post },
+        };
+      }),
+    );
+  }
+  return paths;
+}
+
+const { article, data } = Astro.params;
+const { post } = Astro.props;
+const { Content, headings } = await post.render();
+console.log();
+---
+
+<ArticleLayout>
+  <h1 class="py-3">{post.data.title}</h1>
+  <Content />
+</ArticleLayout>

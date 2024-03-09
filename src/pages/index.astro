@@ -1,0 +1,132 @@
+---
+// const posts = await Astro.glob("../pages/**/*.mdx");
+// const tagsAr = posts.map((item) => item.frontmatter.tags);
+// const tagSet = new Set(tagsAr);
+// let tagCollection = Array.from(tagSet);
+// tagCollection= [...tagCollection]
+
+import { SEO } from "astro-seo";
+import { getCollection, getEntry } from "astro:content";
+import getTags from "../utils/getTags";
+import HeroComponent from "../components/HeroComponent.astro";
+import MainFooterComponent from "../components/MainFooterComponent.astro";
+getTags();
+---
+
+<head>
+  <meta charset="utf-8" />
+  <SEO 
+    title="Тайны Библии"
+    description="Толкование самых загадочных Библейских Тайн. Пророчества и знамения, откровение и многое другое."
+  />
+</head>
+<HeroComponent />
+<section class="bg-white dark:bg-gray-900">
+  <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
+    <h1
+      class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+    >
+      Чему на самом деле учил Иисус?
+    </h1>
+    <p
+      class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400"
+    >
+      Here at Flowbite we focus on markets where technology, innovation, and
+      capital can unlock long-term value and drive economic growth.
+    </p>
+    <div
+      class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0"
+    >
+      <a
+        href="#chapterNavigation"
+        class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+      >
+        Выбрать главу
+        <svg
+          class="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 14 10"
+        >
+          <path
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M1 5h12m0 0L9 1m4 4L9 9"></path>
+        </svg>
+      </a>
+      <a
+        href="/tags"
+        class="inline-flex justify-center items-center py-3 px-5 sm:ms-4 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+      >
+        Все темы
+      </a>
+    </div>
+  </div>
+</section>
+<div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
+  <h2 id="chapterNavigation">Навигация по главам</h2>
+  <ul>
+    <ul class="list-none flex flex-wrap border-slate-950">
+      {
+        Array.from({ length: 10 }).map((_, index) => (
+          <li class="border p-5 rounded-md border-slate-950 m-3">
+            <a href={`/${index + 1}`}>{index + 1} Глава</a>
+          </li>
+        ))
+      }
+    </ul>
+  </ul>
+</div>
+<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16">
+  <h2>Содержание</h2>
+  <h3>Матфея 1 гл.</h3>
+  <ul>
+    <li>1-17. Родословие Христа – Тайны Библии</li>
+    <li>18-25. Рождение Сына: важные события и их значение</li>
+  </ul>
+</div>
+<MainFooterComponent />
+<style>
+  h1 {
+    @apply text-8xl;
+    @apply mb-4;
+  }
+  h2 {
+    @apply text-3xl;
+    @apply text-slate-300;
+    @apply bg-indigo-500;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  P {
+    padding: 20px;
+  }
+
+  .card {
+    @apply border;
+    padding: 40px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .card__content {
+    @apply pl-5;
+  }
+  .tags {
+    display: flex;
+  }
+  .tags p {
+    padding: 10px;
+    text-transform: capitalize;
+    @apply font-light;
+    @apply border;
+    @apply text-xs;
+  }
+</style>

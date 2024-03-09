@@ -1,0 +1,31 @@
+---
+import translit from "translitit-cyrillic-russian-to-latin";
+import ArticleLayout from "../layouts/ArticleLayout.astro";
+import { getCollection } from "astro:content";
+let words = "абвгдежзиклмнопрстуфхцчщэюя".split("");
+const tags = await getCollection("commentary");
+const tagsArr = [...new Set(tags.map((tag) => tag.data.tags))];
+let flatArray = tagsArr.flat().filter(Boolean);
+flatArray = flatArray.map((tag) => tag.toLowerCase());
+let uniqueWords = [...new Set(flatArray)].sort();
+---
+
+<ArticleLayout>
+  <h1>Теги</h1>
+  {
+    words.map((word) => (
+      <div class="border-b">
+        <h2 class="uppercase">{word}</h2>
+        <div class="flex flex-wrap">
+          {uniqueWords
+            .filter((tag) => tag.startsWith(word))
+            .map((tag) => (
+              <a href={`/tags/${translit(tag)}`} class="capitalize p-3">
+                {tag}
+              </a>
+            ))}
+        </div>
+      </div>
+    ))
+  }
+</ArticleLayout>
